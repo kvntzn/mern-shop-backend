@@ -3,40 +3,33 @@ const app = express();
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const cors = require("cors");
+
+require("dotenv/config");
+
+app.use(cors());
+app.options("*", cors());
+
+const api = process.env.API_URL;
+
+const productsRouter = require("./routers/products");
 
 //middleware
 app.use(bodyParser.json());
 app.use(morgan("tiny"));
 
-require("dotenv/config");
-
-const api = process.env.API_URL;
-
-app.get(`${api}/products`, (req, res) => {
-  const product = {
-    id: 1,
-    name: "hair dresser",
-    image: "some_url",
-  };
-  res.send(product);
-});
-
-app.post(`${api}/products`, (req, res) => {
-  const newProduct = req.body;
-  console.log(newProduct);
-  res.send(newProduct);
-});
+app.use(`${api}/products`, productsRouter);
 
 mongoose
   .connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    dbName: 'shop-database'
+    useCreateIndex: true,
   })
   .then(() => console.log("Database connection is ready.."))
   .catch((err) => console.log(err));
 
 app.listen(3000, () => {
   console.log(api);
-  console.log("server is running at http://localhost:3000");
+  console.log("server is t http://localhost:3000");
 });
