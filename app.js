@@ -13,12 +13,14 @@ app.options("*", cors());
 const api = process.env.API_URL;
 
 const productsRouter = require("./routers/products");
+const categoriesRouter = require("./routers/categories");
 
 //middleware
 app.use(bodyParser.json());
 app.use(morgan("tiny"));
 
 app.use(`${api}/products`, productsRouter);
+app.use(`${api}/categories`, categoriesRouter);
 
 mongoose
   .connect(process.env.CONNECTION_STRING, {

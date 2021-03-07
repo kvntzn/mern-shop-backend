@@ -1,4 +1,4 @@
-const { Product } = require(".models/product");
+const { Product } = require("../models/product");
 const express = require("express");
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.post(`/`, (req, res) => {
       res.status(201).json(createdProduct);
     })
     .catch((err) => {
-      res.status(422).json({
+      res.status(500).json({
         error: err,
         success: false,
       });
