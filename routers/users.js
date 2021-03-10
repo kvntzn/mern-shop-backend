@@ -1,14 +1,32 @@
 const { User } = require("../models/user");
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
 
-router.get(`/`, async (req, res) => {});
+router.get(`/`, async (req, res) => {
+  const userList = await User.find().select("");
+
+  if (!userList) {
+    res.status(500).json({ success: false });
+  }
+
+  res.send(userList);
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-passwordHash");
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
 
 router.post("/", async (req, res) => {
   let user = new User({
     name: req.body.name,
     email: req.body.email,
-    passwordHash: req.body.passwordHash,
+    passwordHash: bcrypt.hashSync(req.body.password, 10),
     image: req.body.image,
     street: req.body.street,
     city: req.body.city,

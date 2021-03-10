@@ -19,7 +19,6 @@ const usersRouter = require("./routers/users");
 //middleware
 app.use(bodyParser.json());
 app.use(morgan("tiny"));
-ßßßß;
 
 app.use(`${api}/products`, productsRouter);
 app.use(`${api}/categories`, categoriesRouter);
