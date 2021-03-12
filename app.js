@@ -21,10 +21,12 @@ app.use(errorHandler);
 
 const productsRouter = require("./routers/products");
 const categoriesRouter = require("./routers/categories");
+const ordersRouter = require("./routers/orders");
 const usersRouter = require("./routers/users");
 //Routes
 app.use(`${api}/products`, productsRouter);
 app.use(`${api}/categories`, categoriesRouter);
+app.use(`${api}/orders`, ordersRouter);
 app.use(`${api}/users`, usersRouter);
 
 mongoose
