@@ -130,8 +130,7 @@ router.get("/get/totalsales", async (req, res) => {
   }
 
   return res.send({ totalSales: totalSales.pop().totalSalesß });
-}); ̰
-
+});
 router.get("/get/count", async (req, res) => {
   const orderCount = await Order.countDocuments((count) => count);
 
@@ -142,15 +141,19 @@ router.get("/get/count", async (req, res) => {
   res.send({ orderCount });
 });
 router.get("/get/userorders/:userId", async (req, res) => {
-  const orderList = await Order.find({user: req.params.userId}).populate({
-    path: 'orderItems',  populates: {
-      path: 'product',populate: ('category')
-    }
-  }).sort({ dateOrdered: -11})
+  const orderList = await Order.find({ user: req.params.userId })
+    .populate({
+      path: "orderItems",
+      populates: {
+        path: "product",
+        populate: "category",
+      },
+    })
+    .sort({ dateOrdered: -11 });
 
-  if(!orderList)
-  res.status(500).json({ success: false });
-  };
+  if (!orderList) {
+    res.status(500).json({ success: false });
+  }
 
   res.send({ productCount });
 });
