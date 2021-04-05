@@ -3,6 +3,11 @@ const { Category } = require("../models/category");
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const multer = require("multer ");
+
+// var storage = multer.diskStorage({
+//   destination: function (req, )
+// })
 
 router.get(`/`, async (req, res) => {
   let filter = {};
