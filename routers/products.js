@@ -5,9 +5,17 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require("multer ");
 
-// var storage = multer.diskStorage({
-//   destination: function (req, )
-// })
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "/public/uploads");
+  },
+  filename: function (req, file, cb) {
+    const filename = file.originalname.split(" ").join("-");
+    cb(nul, filename + "-" + Date.now());
+  },
+});
+
+const uploadOptions = multer({ storage: storage });
 
 router.get(`/`, async (req, res) => {
   let filter = {};
@@ -34,15 +42,17 @@ router.get(`/:id`, async (req, res) => {
   res.send(product);
 });
 
-router.post(`/`, async (req, res) => {
+router.post(`/`, uploaddOptions.single("image"), async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("Invalid category");
 
+  const fileName = req.file.filename;
+  const basePath = `${req.protocol}://${req.get("host")}/public/upload/`;
   let product = new Product({
     name: req.body.name,
     description: req.body.description,
     richDescription: req.body.richDescription,
-    image: req.body.image,
+    image: `${basePath}${fileName}`,
     images: req.body.images,
     brand: req.body.brand,
     price: req.body.price,
