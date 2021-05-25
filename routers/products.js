@@ -6,9 +6,9 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 
 const FILE_TYPE_MAP = {
-  'image/png': 'png',
-  'image/jpeg': 'jpeg',
-  'image/jpg': 'jpg',
+  "image/png": "png",
+  "image/jpeg": "jpeg",
+  "image/jpg": "jpg",
 };
 
 const storage = multer.diskStorage({
@@ -58,9 +58,10 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("Invalid category");
 
+  const file = req.file;
+  if (!file) return res.status(400).send("No image in the request");
+
   const fileName = req.file.filename;
-  // const basePath = `${req.protocol}://${req.get("host")}/public/upload/`;
-  // const basePath = `${req.protocol}:///public/upload/`;
   const basePath = `${req.protocol}://${req.get("host")}/public/upload/`;
   let product = new Product({
     name: req.body.name,
@@ -86,7 +87,7 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   res.send(product);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", uploadOptions.single("image"), async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     res.status(400).send("Invalid ID");
   }
@@ -94,13 +95,27 @@ router.put("/:id", async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("Invalid Category");
 
-  const product = await Product.findByIdAndUpdate(
+  const product = await Product.findById(req.params.id);
+  if (!product) return res.status.send("Invalid  Product");
+
+  const file = req.file;
+  let imagepath;
+
+  if (file) {
+    const fileName = file.filename;
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+    imagepath = `${basePath}${fileName}`;
+  } else {
+    imagepath = product.image;
+  }
+
+  const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
     {
       name: req.body.name,
       description: req.body.description,
       richDescription: req.body.richDescription,
-      image: req.body.image,
+      image: imagepath,
       images: req.body.images,
       brand: req.body.brand,
       price: req.body.price,
@@ -112,11 +127,11 @@ router.put("/:id", async (req, res) => {
     { new: true }
   );
 
-  if (!product) {
+  if (!updatedProduct) {
     return res.status(404).send("the category cannot be created");
   }
 
-  res.send(product);
+  res.send(updatedProduct);
 });
 
 router.delete("/:id", (req, res) => {
