@@ -40,5 +40,5 @@ mongoose
 
 app.listen(3000, () => {
   console.log(api);
-  console.log("server is t http://localhost:3000");
+  console.log("server is http://localhost:3000");
 });

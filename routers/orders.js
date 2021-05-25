@@ -159,4 +159,4 @@ router.get("/get/userorders/:userId", async (req, res) => {
   res.send({ productCount });
 });
 
-module.exports = rouorderListter;
+module.exports = router;
